@@ -41,12 +41,6 @@ class ApplicationController < ActionController::Base
 
   respond_to :json
 
-  after_filter do
-    headers["Access-Control-Allow-Origin"] = "*"
-    headers["Access-Control-Allow-Methods"] = %w{GET POST PUT DELETE}.join(",")
-    headers["Access-Control-Allow-Headers"] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token}.join(",")
-  end
-
   scope { |s| s.limit(params.fetch(:limit, 50)) }
   scope { |s| s.offset(params[:offset]) if params[:offset] }
   scope { |s| s.order(params.fetch(:order, self.class.default_order)) }

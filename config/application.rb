@@ -10,5 +10,11 @@ module Headbang
   STOP_WORDS = %w(the vinyl cd cds cdm dvd lp ep 7inch web)
 
   class Application < Rails::Application
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', headers: :any, methods: [:get, :post, :delete, :put, :options], max_age: 0
+      end
+    end
   end
 end

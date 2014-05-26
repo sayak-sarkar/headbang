@@ -10,5 +10,6 @@ gem 'inherited_resources'
 gem 'kaminari'
 gem 'taglib-ruby', require: 'taglib'
 
+gem 'rack-cors', require: 'rack/cors'
 gem 'httparty'
 gem 'hashie'
