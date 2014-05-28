@@ -8,7 +8,6 @@ class TrackSerializer < ActiveModel::Serializer
   end
 
   def type
-    # TODO: Remove after implementing
-    "audio/mp3"
+    Mime::Type.lookup_by_extension(File.extname(object.path).downcase.delete('.')).to_s
   end
 end
