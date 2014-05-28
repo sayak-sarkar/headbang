@@ -10,51 +10,25 @@ class TracksController < ApplicationController
         resource.release.increment!(:play_count)
         resource.artist.increment!(:play_count)
 
-        length = File.size(resource.path)
-        status_code = 200
-        range_start = 0
-        range_end = length - 1
-
-        headers.update(
-            'Content-Type' => "application/octet-stream",
-            'Content-Transfer-Encoding' => 'binary'
-        )
-
-        if request.env['HTTP_RANGE'] =~ /bytes=(\d+)-(\d*)/
-          status_code = 206
-          range_start, range_end = $1, $2
-
-          if range_start.empty? and range_end.empty?
-            headers["Content-Length"] = 0
-            return render(:status => 416, :nothing => true)
-          end
-
-          if range_end.empty?
-            range_end = length - 1
-          else
-            range_end = range_end.to_i
-          end
-
-          if range_start.empty?
-            range_start = length - range_end
-            range_end = length - 1
-          else
-            range_start = range_start.to_i
-          end
-
-          headers['Accept-Ranges'] = 'bytes'
-          headers['Content-Range'] = "bytes #{range_start}-#{range_end}/#{length}"
-        end
-
-        range_length = range_end.to_i - range_start.to_i + 1
-        headers['Content-Length'] = range_length.to_s
-        headers['Cache-Control'] = 'private' if headers['Cache-Control'] == 'no-cache'
-
-        File.open(resource.path, 'rb') do |file|
-          file.seek(range_start, IO::SEEK_SET)
-          render status: status_code, text: file.read(range_length)
-        end
+        stream_file(resource.path)
       end
+    end
+  end
+
+  protected
+
+  def stream_file(path)
+    size = File.size(path)
+    if range = Rack::Utils.byte_ranges(request.headers, size).first
+      offset = range.begin
+      length = range.end - range.begin + 1
+
+      response.header["Accept-Ranges"] = "bytes"
+      response.header["Content-Range"] = "bytes #{range.begin}-#{range.end}/#{size}"
+
+      send_data IO.binread(path, length, offset), stream: true, status: 206
+    else
+      render status: 416
     end
   end
 end
