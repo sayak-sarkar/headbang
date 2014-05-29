@@ -1,6 +1,14 @@
 class TracksController < ApplicationController
   belongs_to :release, optional: true
-  scope { |s| s.includes(:release).includes(:artist).order("number") }
+  belongs_to :artist, optional: true
+  belongs_to :collection, optional: true
+
+  scope do |s|
+    s.joins(:release => :artist).
+        order(Artist.arel_table[:name]).
+        order(Release.arel_table[:title]).
+        order(Track.arel_table[:number])
+  end
 
   def show
     super do |format|
