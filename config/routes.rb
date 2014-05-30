@@ -27,5 +27,7 @@ Rails.application.routes.draw do
       resources :artists, only: :index
       resources :releases, only: :index
     end
+
+    resources :sources
   end
 end

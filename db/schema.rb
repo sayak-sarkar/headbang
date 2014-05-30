@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140519234619) do
+ActiveRecord::Schema.define(version: 20140529233053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,6 +117,14 @@ ActiveRecord::Schema.define(version: 20140519234619) do
   add_index "releases", ["country_id"], name: "index_releases_on_country_id", using: :btree
   add_index "releases", ["path"], name: "index_releases_on_path", unique: true, using: :btree
   add_index "releases", ["release_id"], name: "index_releases_on_release_id", using: :btree
+
+  create_table "sources", force: true do |t|
+    t.string   "path"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sources", ["path"], name: "index_sources_on_path", unique: true, using: :btree
 
   create_table "tracks", force: true do |t|
     t.integer  "number"
