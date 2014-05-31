@@ -6,7 +6,7 @@ class ReleasesController < ApplicationController
   belongs_to :collection, optional: true
 
   scope { |s| s.duplicate(params.fetch(:duplicate, false)) }
-  scope { |s| s.includes(:artist, :collections) }
+  scope { |s| s.joins(:artist).includes(:collections) }
 
   def show
     super do |format|
