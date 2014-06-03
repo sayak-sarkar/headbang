@@ -35,7 +35,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  inherit_resources
+  def self.inherited(klass)
+    unless klass == InheritedResources::Base
+      klass.inherit_resources
+    end
+  end
+
   include Scoping
   class_attribute :default_order
 
