@@ -4,11 +4,7 @@ module LastFM
     include Hashie
 
     base_uri 'http://ws.audioscrobbler.com/2.0/'
-    headers "user-agent" => Headbang::USER_AGENT
-    # debug_output $stderr
-
     class_attribute :api_key
-    self.api_key = "84324111ccccaa831f917ca14114bd6e"
 
     class << self
       def request(path, opts = {})
@@ -23,11 +19,11 @@ module LastFM
     end
   end
 
-  class Album < Base
-    class << self
-      def search(args = {})
-        request '/', args.merge(method: "album.getinfo")
-      end
+  %w(artist.getInfo artist.getSimilar artist.getCorrection album.getInfo).each do |method|
+    resource_name, method_name = method.split(".", 2)
+    klass = const_defined?(resource_name.camelize, false) ? const_get(resource_name.camelize, false) : const_set(resource_name.camelize, Class.new(LastFM::Base))
+    klass.define_singleton_method(method_name.underscore) do |args = {}|
+      request '/', args.merge(method: method)
     end
   end
 end

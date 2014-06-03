@@ -10,7 +10,7 @@ class LastFMReleaseLookupService
     ActiveRecord::Base.connection_pool.with_connection do
       args = {artist: clean(@release.artist.name), album: clean(@release.title)}
       puts "LastFM: #{args.inspect}"
-      response = LastFM::Album.search(args)
+      response = LastFM::Album.get_info(args)
       response.album && response.album.tap do |result|
         @release.artist.update_attributes(name: result.artist)
         @release.update_attributes(release_attributes(result))
