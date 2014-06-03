@@ -10,6 +10,7 @@ module Headbang
   STOP_WORDS = %w(the vinyl cd cds cdm dvd lp ep 7inch web)
 
   class Application < Rails::Application
+    config.secret_token = SecureRandom.hex(128)
     config.middleware.use Rack::Cors do
       allow do
         origins '*'
