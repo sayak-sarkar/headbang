@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :tracks, only: :index
       resources :releases, only: :index
       resource :artwork, only: :show
+      post :lookup, on: :collection
     end
 
     resources :tracks, only: :show

@@ -19,6 +19,11 @@ class ReleasesController < ApplicationController
     end
   end
 
+  def lookup
+    Release.find_each { |release| Jobist.push(LastFMReleaseLookupService.new(release)) }
+    render nothing: true, status: :accepted
+  end
+
   protected
 
   def filter(scope, value)
