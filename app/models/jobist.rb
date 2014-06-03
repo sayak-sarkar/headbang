@@ -51,24 +51,16 @@ module Jobist
       @count, @time_span = count, time_span.to_i
       @mutex = Mutex.new
       @condition = ConditionVariable.new
-    end
-
-    def oldest_timestamp
-      @timestamps ||= [@count, (Time.now - @time_span)]
-      @timestamps[0]
-    end
-
-    def current_timestamp=(value)
-      @timestamps.push(value).shift
+      @timestamps = [@count, (Time.now - @time_span)]
     end
 
     def wait
       @mutex.synchronize do
-        delta = Time.now - oldest_timestamp
+        delta = Time.now - @timestamps.first
         if delta.to_i < @time_span
           @condition.wait(@mutex)
         end
-        self.current_timestamp = Time.now
+        @timestamps.push(Time.now).shift
       end
     end
 
@@ -106,11 +98,7 @@ module Jobist
       end
     end
 
-    # Drain the queue, running all jobs in a different thread. This method
-    # may not be available on production queues.
     def drain
-      # run the jobs in a separate thread so assumptions of synchronous
-      # jobs are caught in test mode.
       consumers.each(&:drain)
     end
   end
@@ -120,8 +108,7 @@ module Jobist
 
     def initialize(queue, options = {})
       @queue = queue
-      @logger = options[:logger]
-      @fallback_logger = Logger.new($stderr)
+      @logger = options.fetch(:logger, Logger.new($stderr))
     end
 
     def start
@@ -130,7 +117,7 @@ module Jobist
     end
 
     def shutdown
-      @queue.push nil
+      @queue.push(nil)
       @thread.join
     end
 
@@ -151,7 +138,7 @@ module Jobist
     end
 
     def handle_exception(job, exception)
-      (logger || @fallback_logger).error "Job Error: #{job.inspect}\n#{exception.message}\n#{exception.backtrace.join("\n")}"
+      logger.error "Job Error: #{job.inspect}\n#{exception.message}\n#{exception.backtrace.join("\n")}"
     end
   end
 end
