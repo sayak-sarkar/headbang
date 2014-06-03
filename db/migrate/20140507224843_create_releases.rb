@@ -1,11 +1,11 @@
 class CreateReleases < ActiveRecord::Migration
   def change
     create_table :releases do |t|
-      t.string :title
+      t.string :title, limit: 1024
       t.string :year
       t.string :catalog_number
       t.string :artwork_url
-      t.string :path
+      t.string :path, limit: 1024
       t.string :type
       t.integer :play_count, default: 0
       t.string :discogs_id
