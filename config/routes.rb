@@ -28,7 +28,10 @@ Rails.application.routes.draw do
       resources :releases, only: :index
     end
 
+    resources :sources do
+      post :scan, on: :collection
+    end
+
     get "/browse", to: "browse#index"
-    resources :sources
   end
 end
