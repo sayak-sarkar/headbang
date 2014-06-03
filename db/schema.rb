@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20140529233053) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "artists", force: true do |t|
     t.string   "name"
     t.integer  "play_count",      default: 0
@@ -28,7 +25,7 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "artists", ["name"], name: "index_artists_on_name", unique: true, using: :btree
+  add_index "artists", ["name"], name: "index_artists_on_name", unique: true
 
   create_table "collections", force: true do |t|
     t.string   "name"
@@ -41,8 +38,8 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.integer "release_id"
   end
 
-  add_index "collections_releases", ["collection_id"], name: "index_collections_releases_on_collection_id", using: :btree
-  add_index "collections_releases", ["release_id"], name: "index_collections_releases_on_release_id", using: :btree
+  add_index "collections_releases", ["collection_id"], name: "index_collections_releases_on_collection_id"
+  add_index "collections_releases", ["release_id"], name: "index_collections_releases_on_release_id"
 
   create_table "countries", force: true do |t|
     t.string   "name"
@@ -51,7 +48,7 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "countries", ["name"], name: "index_countries_on_name", unique: true, using: :btree
+  add_index "countries", ["name"], name: "index_countries_on_name", unique: true
 
   create_table "genre_releases", force: true do |t|
     t.integer  "release_id"
@@ -60,8 +57,8 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "genre_releases", ["genre_id"], name: "index_genre_releases_on_genre_id", using: :btree
-  add_index "genre_releases", ["release_id"], name: "index_genre_releases_on_release_id", using: :btree
+  add_index "genre_releases", ["genre_id"], name: "index_genre_releases_on_genre_id"
+  add_index "genre_releases", ["release_id"], name: "index_genre_releases_on_release_id"
 
   create_table "genres", force: true do |t|
     t.string   "name"
@@ -69,7 +66,7 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "genres", ["name"], name: "index_genres_on_name", unique: true, using: :btree
+  add_index "genres", ["name"], name: "index_genres_on_name", unique: true
 
   create_table "label_releases", force: true do |t|
     t.integer  "label_id"
@@ -78,8 +75,8 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "label_releases", ["label_id"], name: "index_label_releases_on_label_id", using: :btree
-  add_index "label_releases", ["release_id"], name: "index_label_releases_on_release_id", using: :btree
+  add_index "label_releases", ["label_id"], name: "index_label_releases_on_label_id"
+  add_index "label_releases", ["release_id"], name: "index_label_releases_on_release_id"
 
   create_table "labels", force: true do |t|
     t.string   "name"
@@ -88,35 +85,35 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "labels", ["name"], name: "index_labels_on_name", unique: true, using: :btree
+  add_index "labels", ["name"], name: "index_labels_on_name", unique: true
 
   create_table "releases", force: true do |t|
-    t.string   "title"
+    t.string   "title",           limit: 1024
     t.string   "year"
     t.string   "catalog_number"
     t.string   "artwork_url"
-    t.string   "path"
+    t.string   "path",            limit: 1024
     t.string   "type"
-    t.integer  "play_count",      default: 0
+    t.integer  "play_count",                   default: 0
     t.string   "discogs_id"
     t.string   "music_brainz_id"
     t.string   "last_fm_id"
     t.string   "last_fm_url"
     t.integer  "country_id"
     t.integer  "artist_id"
-    t.integer  "genres_count",    default: 0
-    t.integer  "labels_count",    default: 0
-    t.integer  "tracks_count",    default: 0
+    t.integer  "genres_count",                 default: 0
+    t.integer  "labels_count",                 default: 0
+    t.integer  "tracks_count",                 default: 0
     t.datetime "released_at"
     t.integer  "release_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "releases", ["artist_id"], name: "index_releases_on_artist_id", using: :btree
-  add_index "releases", ["country_id"], name: "index_releases_on_country_id", using: :btree
-  add_index "releases", ["path"], name: "index_releases_on_path", unique: true, using: :btree
-  add_index "releases", ["release_id"], name: "index_releases_on_release_id", using: :btree
+  add_index "releases", ["artist_id"], name: "index_releases_on_artist_id"
+  add_index "releases", ["country_id"], name: "index_releases_on_country_id"
+  add_index "releases", ["path"], name: "index_releases_on_path", unique: true
+  add_index "releases", ["release_id"], name: "index_releases_on_release_id"
 
   create_table "sources", force: true do |t|
     t.string   "path"
@@ -124,7 +121,7 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "sources", ["path"], name: "index_sources_on_path", unique: true, using: :btree
+  add_index "sources", ["path"], name: "index_sources_on_path", unique: true
 
   create_table "tracks", force: true do |t|
     t.integer  "number"
@@ -140,6 +137,6 @@ ActiveRecord::Schema.define(version: 20140529233053) do
     t.datetime "updated_at"
   end
 
-  add_index "tracks", ["path"], name: "index_tracks_on_path", unique: true, using: :btree
+  add_index "tracks", ["path"], name: "index_tracks_on_path", unique: true
 
 end
