@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 6.0', '>= 6.0.3.3'
 
 gem 'thin'
 gem "active_model_serializers"
